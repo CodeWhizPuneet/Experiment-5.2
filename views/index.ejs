@@ -1,0 +1,73 @@
+<%- include('partials/header') %>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3 class="mb-0"><%= title %></h3>
+  <a href="/students/create" class="btn btn-primary btn-sm">
+    <i class="bi bi-plus-lg me-1"></i>Add Student
+  </a>
+</div>
+
+<!-- Search -->
+<form action="/students/search" method="GET" class="mb-4">
+  <div class="input-group">
+    <input type="text" name="q" class="form-control" placeholder="Search by name, email or roll number..." />
+    <button class="btn btn-outline-primary" type="submit">
+      <i class="bi bi-search"></i> Search
+    </button>
+  </div>
+</form>
+
+<% if (students.length === 0) { %>
+  <div class="alert alert-info">No students found.</div>
+<% } else { %>
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover align-middle">
+      <thead class="table-primary">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Roll No.</th>
+          <th>Course</th>
+          <th>Email</th>
+          <th>Marks</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% students.forEach((s, i) => { %>
+          <tr>
+            <td><%= i + 1 %></td>
+            <td><strong><%= s.name %></strong></td>
+            <td><%= s.rollNumber %></td>
+            <td><%= s.course %></td>
+            <td><%= s.email %></td>
+            <td>
+              <% if (s.marks !== null && s.marks !== undefined) { %>
+                <span class="badge <%= s.marks >= 40 ? 'bg-success' : 'bg-danger' %>"><%= s.marks %></span>
+              <% } else { %>
+                <span class="text-muted">—</span>
+              <% } %>
+            </td>
+            <td>
+              <a href="/students/<%= s._id %>" class="btn btn-info btn-sm">
+                <i class="bi bi-eye"></i>
+              </a>
+              <a href="/students/<%= s._id %>/edit" class="btn btn-warning btn-sm">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <form action="/students/<%= s._id %>?_method=DELETE" method="POST" class="d-inline"
+                    onsubmit="return confirm('Delete <%= s.name %>?')">
+                <button class="btn btn-danger btn-sm" type="submit">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-muted small">Total: <%= students.length %> student(s)</p>
+<% } %>
+
+<%- include('partials/footer') %>
